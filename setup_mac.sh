@@ -1,10 +1,10 @@
 #!/usr/bin/env bash -l
 
 # Install conda
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
 
 # Install conda
-bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda
+bash Miniconda3-latest-MacOSX-arm64.sh -b -p $HOME/miniconda
 
 # Add conda to path
 export PATH="$HOME/miniconda/bin:$PATH"
