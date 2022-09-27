@@ -133,53 +133,6 @@ fi
 # Create a shell script to run the web ui
 echo "#!/usr/bin/env bash -l
 
-# Check all required files are in place
-if [ -f \"models/sd-v1-4.ckpt\" ] && [ -d \"repositories/stable-diffusion\" ] && [ -d \"repositories/taming-transformers\" ] && [ -d \"repositories/CodeFormer\" ] && [ -d \"repositories/BLIP\" ]; then
-    echo \"All files are in place. Continuing installation.\"
-else
-    echo \"=============================================\"
-    echo \"====================ERROR====================\"
-    echo \"=============================================\"
-    echo \"The check for the models & required repositories has failed.\"
-    echo \"Please check if the model is in place and the repos are cloned.\"
-    echo \"You can find the model in stable-diffusion-webui/models/sd-v1-4.ckpt\"
-    echo \"You can find the repos in stable-diffusion-webui/repositories/\"
-    echo \"=============================================\"
-    echo \"====================ERROR====================\"
-    echo \"=============================================\"
-    exit 1
-fi
-
-# Check if the config var is set
-if [ -z \"\$PYTORCH_ENABLE_MPS_FALLBACK\" ]; then
-    echo \"=============================================\"
-    echo \"====================ERROR====================\"
-    echo \"=============================================\"
-    echo \"The PYTORCH_ENABLE_MPS_FALLBACK variable is not set.\"
-    echo \"This means that the script will either fall back to CPU or fail.\"
-    echo \"To fix this, please run the following command:\"
-    echo \"conda env config vars set PYTORCH_ENABLE_MPS_FALLBACK=1\"
-    echo \"Or, try running the script again.\"
-    echo \"=============================================\"
-    echo \"====================ERROR====================\"
-    echo \"=============================================\"
-    exit 1
-fi
-
-# Check if the web-ui conda environment is activated
-if [ -z \"\$CONDA_DEFAULT_ENV\" ] || [ \"\$CONDA_DEFAULT_ENV\" != \"web-ui\" ]; then
-    echo \"=============================================\"
-    echo \"====================ERROR====================\"
-    echo \"=============================================\"
-    echo \"The web-ui conda environment is not activated.\"
-    echo \"Please activate the web-ui conda environment and try again.\"
-    echo \"HINT: conda activate web-ui\"
-    echo \"=============================================\"
-    echo \"====================ERROR====================\"
-    echo \"=============================================\"
-    exit 1
-fi
-
 # Activate conda environment
 conda activate web-ui
 
