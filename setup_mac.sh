@@ -143,7 +143,7 @@ conda activate web-ui
 git pull --rebase
 
 # Run the web ui
-python webui.py -precision full --no-half --opt-split-attention-v1 
+python webui.py --precision full --no-half --opt-split-attention-v1 
 
 # Deactivate conda environment
 conda deactivate
