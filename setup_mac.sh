@@ -133,6 +133,9 @@ fi
 # Create a shell script to run the web ui
 echo "#!/usr/bin/env bash -l
 
+# This should not be needed since it's configured during installation, but might as well have it here.
+conda env config vars set PYTORCH_ENABLE_MPS_FALLBACK=1
+
 # Activate conda environment
 conda activate web-ui
 
