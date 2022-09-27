@@ -1,13 +1,22 @@
 #!/usr/bin/env bash -l
 
-# Install conda
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+if ! command -v conda &> /dev/null
+then
+    echo "conda is not installed. Installing miniconda"
 
-# Install conda
-bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda
+    # Install conda
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
 
-# Add conda to path
-export PATH="$HOME/miniconda/bin:$PATH"
+    # Install conda
+    bash Miniconda3-latest-MacOSX-arm64.sh -b -p $HOME/miniconda
+    
+    # Add conda to path
+    export PATH="$HOME/miniconda/bin:$PATH"
+
+else
+    echo "conda is installed."
+
+fi
 
 # Initialize conda
 conda init
