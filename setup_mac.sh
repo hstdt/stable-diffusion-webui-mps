@@ -55,6 +55,7 @@ while true; do
         [Nn]* ) echo "Installing model"; 
         # Prompt the user for their hugging face token and store it in a variable
         echo "Register an account on huggingface.co and then create a token (read) on https://huggingface.co/settings/tokens"
+        echo "Also make sure to accept the disclaimer here: https://huggingface.co/CompVis/stable-diffusion-v-1-4-original"
         read -p "Please enter your hugging face token: " hf_token
         # Install the model
         headertoken="Authorization: Bearer $hf_token"
@@ -72,6 +73,8 @@ git clone https://github.com/CompVis/taming-transformers.git repositories/taming
 git clone https://github.com/sczhou/CodeFormer.git repositories/CodeFormer
     
 git clone https://github.com/salesforce/BLIP.git repositories/BLIP
+
+git clone https://github.com/crowsonkb/k-diffusion.git repositories/k-diffusion
 
 # Before we continue, check if 1) the model is in place 2) the repos are cloned
 if [ -f "models/sd-v1-4.ckpt" ] && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
