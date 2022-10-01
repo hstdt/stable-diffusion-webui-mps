@@ -74,7 +74,7 @@ git clone https://github.com/sczhou/CodeFormer.git repositories/CodeFormer
     
 git clone https://github.com/salesforce/BLIP.git repositories/BLIP
 
-git clone https://github.com/crowsonkb/k-diffusion.git repositories/k-diffusion
+git clone https://github.com/Birch-san/k-diffusion repositories/k-diffusion
 
 # Before we continue, check if 1) the model is in place 2) the repos are cloned
 if [ -f "models/sd-v1-4.ckpt" ] && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
