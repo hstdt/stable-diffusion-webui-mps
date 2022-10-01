@@ -104,8 +104,11 @@ pip install protobuf==3.19.4
 # Remove torch and all related packages
 pip uninstall torch torchvision torchaudio -y
 
-# Install the latest nightly build of PyTorch
-pip install --pre torch torchvision -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html --no-deps
+# Normally, we would install the latest nightly build of PyTorch here,
+# But there's currently a performance regression in the latest nightly releases.
+# Therefore, we're going to use this old version which doesn't have it.
+# TODO: go back once fixed on PyTorch side
+pip install --pre torch==1.13.0.dev20220922 torchvision -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html --no-deps
 
 # Missing dependencie(s)
 pip install gdown 
