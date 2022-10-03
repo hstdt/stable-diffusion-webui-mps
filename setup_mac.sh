@@ -96,6 +96,10 @@ fi
 # Install dependencies
 pip install -r requirements.txt
 
+pip install git+https://github.com/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b5e4823fc8e1
+
+pip install git+https://github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
+
 # There's a bug in protobuf that causes errors when generating images.
 # Read: https://github.com/protocolbuffers/protobuf/issues/10571
 # Once this gets fixed, we can remove this line
