@@ -110,7 +110,7 @@ pip uninstall torch torchvision torchaudio -y
 pip install --pre torch==1.13.0.dev20220922 torchvision==0.14.0.dev20220924 -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html --no-deps
 
 # Missing dependencie(s)
-pip install gdown fastapi
+pip install gdown fastapi psutil
 
 # Activate the MPS_FALLBACK conda environment variable
 conda env config vars set PYTORCH_ENABLE_MPS_FALLBACK=1
