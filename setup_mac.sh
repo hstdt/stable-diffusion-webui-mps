@@ -1,25 +1,32 @@
 #!/usr/bin/env bash -l
 
-if ! command -v conda &> /dev/null
-then
-    echo "conda is not installed. Installing miniconda"
+if [ -z ${NOT_FIRST_SDSETUP_RUN} ]; then
+    if ! command -v conda &> /dev/null
+    then
+        echo "conda is not installed. Installing miniconda"
 
-    # Install conda
-    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
+        # Install conda
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
 
-    # Install conda
-    bash Miniconda3-latest-MacOSX-arm64.sh -b -p $HOME/miniconda
-    
-    # Add conda to path
-    export PATH="$HOME/miniconda/bin:$PATH"
+        # Install conda
+        bash Miniconda3-latest-MacOSX-arm64.sh -b -p $HOME/miniconda
 
-else
-    echo "conda is installed."
+        # Add conda to path
+        export PATH="$HOME/miniconda/bin:$PATH"
 
+    else
+        echo "conda is installed."
+
+    fi
+
+    # Initialize conda
+    conda init
+
+    # Rerun the shell script with a new shell (required to apply conda environment if conda init was run for the first time)
+    exec -c bash -c "NOT_FIRST_SDSETUP_RUN=1 \"$0\""
 fi
 
-# Initialize conda
-conda init
+export -n NOT_FIRST_SDSETUP_RUN
 
 # Remove previous conda environment
 conda remove -n web-ui --all
@@ -148,7 +155,7 @@ conda activate web-ui
 git pull --rebase
 
 # Run the web ui
-python webui.py --precision full --no-half --use-cpu GFPGAN CodeFormer BSRGAN ESRGAN SCUNet
+python webui.py --precision full --no-half --use-cpu GFPGAN CodeFormer BSRGAN ESRGAN SCUNet $@
 
 # Deactivate conda environment
 conda deactivate
