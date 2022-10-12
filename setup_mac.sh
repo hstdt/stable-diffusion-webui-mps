@@ -1,25 +1,32 @@
 #!/usr/bin/env bash -l
 
-if ! command -v conda &> /dev/null
-then
-    echo "conda is not installed. Installing miniconda"
+if [ -z ${NOT_FIRST_SDSETUP_RUN} ]; then
+    if ! command -v conda &> /dev/null
+    then
+        echo "conda is not installed. Installing miniconda"
 
-    # Install conda
-    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
+        # Install conda
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
 
-    # Install conda
-    bash Miniconda3-latest-MacOSX-arm64.sh -b -p $HOME/miniconda
-    
-    # Add conda to path
-    export PATH="$HOME/miniconda/bin:$PATH"
+        # Install conda
+        bash Miniconda3-latest-MacOSX-arm64.sh -b -p $HOME/miniconda
 
-else
-    echo "conda is installed."
+        # Add conda to path
+        export PATH="$HOME/miniconda/bin:$PATH"
 
+    else
+        echo "conda is installed."
+
+    fi
+
+    # Initialize conda
+    conda init
+
+    # Rerun the shell script with a new shell (required to apply conda environment if conda init was run for the first time)
+    exec -c bash -c "NOT_FIRST_SDSETUP_RUN=1 \"$0\""
 fi
 
-# Initialize conda
-conda init
+export -n NOT_FIRST_SDSETUP_RUN
 
 # Remove previous conda environment
 conda remove -n web-ui --all
@@ -46,7 +53,7 @@ echo "============================================="
 echo "============================================="
 
 # Prompt the user to ask if they've already installed the model
-echo "If you've already downloaded the model, you now have time to copy it yourself to stable-diffusion-webui/models/"
+echo "If you've already downloaded the model, you now have time to copy it yourself to stable-diffusion-webui/models/Stable-diffusion/"
 echo "If you haven't downloaded the model yet, you can enter n to downloaded the model from hugging face."
 while true; do
     read -p "Have you already installed the model? (y/n) " yn
@@ -59,7 +66,7 @@ while true; do
         read -p "Please enter your hugging face token: " hf_token
         # Install the model
         headertoken="Authorization: Bearer $hf_token"
-        curl -L -H "$headertoken" -o models/sd-v1-4.ckpt https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt 
+        curl -L -H "$headertoken" -o models/Stable-diffusion/sd-v1-4.ckpt https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt 
         break;;
         * ) echo "Please answer yes or no.";;
     esac
@@ -77,7 +84,7 @@ git clone https://github.com/salesforce/BLIP.git repositories/BLIP
 git clone https://github.com/Birch-san/k-diffusion repositories/k-diffusion
 
 # Before we continue, check if 1) the model is in place 2) the repos are cloned
-if [ -f "models/sd-v1-4.ckpt" ] && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
+if ( [ -f "models/sd-v1-4.ckpt" ] || [ -f "models/Stable-diffusion/sd-v1-4.ckpt" ] ) && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
     echo "All files are in place. Continuing installation."
 else
     echo "============================================="
@@ -85,7 +92,7 @@ else
     echo "============================================="
     echo "The check for the models & required repositories has failed."
     echo "Please check if the model is in place and the repos are cloned."
-    echo "You can find the model in stable-diffusion-webui/models/sd-v1-4.ckpt"
+    echo "You can find the model in stable-diffusion-webui/models/Stable-diffusion/sd-v1-4.ckpt"
     echo "You can find the repos in stable-diffusion-webui/repositories/"
     echo "============================================="
     echo "====================ERROR===================="
@@ -100,11 +107,6 @@ pip install git+https://github.com/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b
 
 pip install git+https://github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
 
-# There's a bug in protobuf that causes errors when generating images.
-# Read: https://github.com/protocolbuffers/protobuf/issues/10571
-# Once this gets fixed, we can remove this line
-pip install protobuf==3.19.4
-
 # Remove torch and all related packages
 pip uninstall torch torchvision torchaudio -y
 
@@ -115,7 +117,7 @@ pip uninstall torch torchvision torchaudio -y
 pip install --pre torch==1.13.0.dev20220922 torchvision==0.14.0.dev20220924 -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html --no-deps
 
 # Missing dependencie(s)
-pip install gdown 
+pip install gdown fastapi psutil
 
 # Activate the MPS_FALLBACK conda environment variable
 conda env config vars set PYTORCH_ENABLE_MPS_FALLBACK=1
@@ -153,7 +155,7 @@ conda activate web-ui
 git pull --rebase
 
 # Run the web ui
-python webui.py --precision full --no-half --opt-split-attention-v1 
+python webui.py --precision full --no-half --use-cpu GFPGAN CodeFormer BSRGAN ESRGAN SCUNet \$@
 
 # Deactivate conda environment
 conda deactivate
@@ -178,6 +180,6 @@ echo "============================================="
 
 
 # Run the web UI
-python webui.py --precision full --no-half --opt-split-attention-v1
+python webui.py --precision full --no-half --use-cpu GFPGAN CodeFormer BSRGAN ESRGAN SCUNet
 
 
