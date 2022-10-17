@@ -23,7 +23,7 @@ if [ -z ${NOT_FIRST_SDSETUP_RUN} ]; then
     conda init
 
     # Rerun the shell script with a new shell (required to apply conda environment if conda init was run for the first time)
-    exec -c bash -c "NOT_FIRST_SDSETUP_RUN=1 \"$0\""
+    exec bash -c "NOT_FIRST_SDSETUP_RUN=1 \"$0\""
 fi
 
 export -n NOT_FIRST_SDSETUP_RUN
