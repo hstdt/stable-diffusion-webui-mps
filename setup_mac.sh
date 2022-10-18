@@ -23,7 +23,7 @@ if [ -z ${NOT_FIRST_SDSETUP_RUN} ]; then
     conda init
 
     # Rerun the shell script with a new shell (required to apply conda environment if conda init was run for the first time)
-    exec -c bash -c "NOT_FIRST_SDSETUP_RUN=1 \"$0\""
+    exec bash -c "NOT_FIRST_SDSETUP_RUN=1 \"$0\""
 fi
 
 export -n NOT_FIRST_SDSETUP_RUN
@@ -107,14 +107,21 @@ pip install git+https://github.com/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b
 
 pip install git+https://github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
 
-# Remove torch and all related packages
-pip uninstall torch torchvision torchaudio -y
+pip install torch==1.12.1 torchvision==0.13.1
 
-# Normally, we would install the latest nightly build of PyTorch here,
-# But there's currently a performance regression in the latest nightly releases.
-# Therefore, we're going to use this old version which doesn't have it.
-# TODO: go back once fixed on PyTorch side
-pip install --pre torch==1.13.0.dev20220922 torchvision==0.14.0.dev20220924 -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html --no-deps
+# Patch the bug that prevents torch from working (see https://github.com/Birch-san/stable-diffusion#patch), rather than try to use a nightly build
+echo "--- a/functional.py	2022-10-14 05:28:39.000000000 -0400
++++ b/functional.py	2022-10-14 05:39:25.000000000 -0400
+@@ -2500,7 +2500,7 @@
+         return handle_torch_function(
+             layer_norm, (input, weight, bias), input, normalized_shape, weight=weight, bias=bias, eps=eps
+         )
+-    return torch.layer_norm(input, normalized_shape, weight, bias, eps, torch.backends.cudnn.enabled)
++    return torch.layer_norm(input.contiguous(), normalized_shape, weight, bias, eps, torch.backends.cudnn.enabled)
+ 
+ 
+ def group_norm(
+" | patch -p1 -d "$(python -c "import torch; import os; print(os.path.dirname(torch.__file__))")"/nn
 
 # Missing dependencie(s)
 pip install gdown fastapi psutil
@@ -155,7 +162,7 @@ conda activate web-ui
 git pull --rebase
 
 # Run the web ui
-python webui.py --precision full --no-half --use-cpu GFPGAN CodeFormer BSRGAN ESRGAN SCUNet \$@
+python webui.py --precision full --no-half --use-cpu Interrogate GFPGAN CodeFormer BSRGAN ESRGAN SCUNet \$@
 
 # Deactivate conda environment
 conda deactivate
@@ -180,6 +187,6 @@ echo "============================================="
 
 
 # Run the web UI
-python webui.py --precision full --no-half --use-cpu GFPGAN CodeFormer BSRGAN ESRGAN SCUNet
+python webui.py --precision full --no-half --use-cpu Interrogate GFPGAN CodeFormer BSRGAN ESRGAN SCUNet
 
 
