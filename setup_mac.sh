@@ -107,7 +107,7 @@ pip install git+https://github.com/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b
 
 pip install git+https://github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
 
-pip install torch==1.12.1 torchvision==0.13.1
+pip install torch==1.13.0 torchvision==0.14.0
 
 # Patch the bug that prevents torch from working (see https://github.com/Birch-san/stable-diffusion#patch), rather than try to use a nightly build
 echo "--- a/functional.py	2022-10-14 05:28:39.000000000 -0400
